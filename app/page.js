@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { firestore } from "@/firebase";
 import {
@@ -31,17 +30,19 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const updateInventory = async () => {
-    const snapshot = query(collection(firestore, "inventory"));
-    const docs = await getDocs(snapshot);
-    const inventoryList = [];
-    docs.forEach((doc) => {
-      inventoryList.push({
-        name: doc.id,
-        ...doc.data(),
+    if (typeof window !== "undefined") {
+      const snapshot = query(collection(firestore, "inventory"));
+      const docs = await getDocs(snapshot);
+      const inventoryList = [];
+      docs.forEach((doc) => {
+        inventoryList.push({
+          name: doc.id,
+          ...doc.data(),
+        });
       });
-    });
-    setInventory(inventoryList);
-    setFilteredInventory(inventoryList);
+      setInventory(inventoryList);
+      setFilteredInventory(inventoryList);
+    }
   };
 
   const addItem = async (item) => {
@@ -158,11 +159,7 @@ export default function Home() {
         </Box>
       </Modal>
 
-      <Stack
-        direction="row"
-        spacing={2}
-        //sx={{ width: "100%", maxWidth: "900px" }}
-      >
+      <Stack direction="row" spacing={2}>
         <TextField
           variant="outlined"
           width="500px"
